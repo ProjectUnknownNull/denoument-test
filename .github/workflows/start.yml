@@ -23,7 +23,7 @@ jobs:
       - name: Download Forge Installer
         run: |
           Invoke-WebRequest `
-            -Uri "https://maven.minecraftforge.net/net/minecraftforge/forge/1.21.1-61.1.8/forge-1.21.1-61.1.8-installer.jar" `
+            -Uri "https://maven.minecraftforge.net/net/minecraftforge/forge/1.21.11-61.1.8/forge-1.21.11-61.1.8-installer.jar" `
             -OutFile "D:\McFolder\forge-installer.jar"
 
       - name: Verify Download
