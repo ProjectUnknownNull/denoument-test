@@ -1,4 +1,4 @@
-name: Forge Second Boot Test
+name: Forge Test
 
 on:
   workflow_dispatch:
@@ -6,6 +6,7 @@ on:
 jobs:
   test:
     runs-on: windows-latest
+    timeout-minutes: 30
 
     steps:
       - name: Setup Java 26
@@ -14,8 +15,12 @@ jobs:
           distribution: 'oracle'
           java-version: '26'
 
+      - name: Check Java
+        run: java -version
+
       - name: Create McFolder
-        run: mkdir D:\McFolder
+        run: |
+          mkdir D:\McFolder
 
       - name: Download Forge Installer
         run: |
@@ -40,22 +45,35 @@ jobs:
           -replace 'eula=false','eula=true' |
           Set-Content D:\McFolder\eula.txt
 
-      - name: Show EULA
-        run: Get-Content D:\McFolder\eula.txt
-
-      - name: Second Boot
+      - name: Verify EULA
         run: |
-          cd D:\McFolder
-          .\run.bat
-        continue-on-error: true
+          Get-Content D:\McFolder\eula.txt
+
+      - name: Start Server In Background
+        run: |
+          Start-Process -FilePath "D:\McFolder\run.bat"
+          Start-Sleep -Seconds 30
+
+      - name: Show JVM Args
+        run: |
+          Write-Host "===== user_jvm_args.txt ====="
+          Get-Content D:\McFolder\user_jvm_args.txt
+
+      - name: Show Folder Contents
+        run: |
+          Write-Host "===== McFolder ====="
+          dir D:\McFolder
 
       - name: Show Latest Log
         run: |
           if (Test-Path "D:\McFolder\logs\latest.log") {
+            Write-Host "===== latest.log ====="
             Get-Content "D:\McFolder\logs\latest.log" -Tail 100
-          } else {
+          }
+          else {
             Write-Host "No latest.log found"
           }
 
-      - name: Show Folder Contents
-        run: dir D:\McFolder
+      - name: Show Java Processes
+        run: |
+          Get-Process java -ErrorAction SilentlyContinue
