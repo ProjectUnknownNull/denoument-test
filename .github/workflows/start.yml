@@ -125,3 +125,28 @@ jobs:
             $_.Name -like "*playit*"
           } |
           Select-Object ProcessId, Name, CommandLine
+
+      - name: Show Playit Folder
+        run: |
+          dir "C:\Program Files\playit_gg\bin"
+
+      - name: Playit Version
+        continue-on-error: true
+        run: |
+          & "C:\Program Files\playit_gg\bin\playit.exe" version
+
+      - name: Playit Status
+        continue-on-error: true
+        run: |
+          & "C:\Program Files\playit_gg\bin\playit.exe" status
+
+      - name: Search For Claim URL
+        continue-on-error: true
+        run: |
+          Get-ChildItem `
+            "$env:ProgramData" `
+            -Recurse `
+            -ErrorAction SilentlyContinue |
+          Select-String `
+            -Pattern "playit.gg","claim" `
+            -ErrorAction SilentlyContinue
