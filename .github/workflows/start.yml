@@ -34,10 +34,10 @@ jobs:
           java -jar forge-installer.jar --installServer
 
       - name: First Boot
+        continue-on-error: true
         run: |
           cd D:\McFolder
           .\run.bat
-        continue-on-error: true
 
       - name: Accept EULA
         run: |
@@ -45,19 +45,36 @@ jobs:
           -replace 'eula=false','eula=true' |
           Set-Content D:\McFolder\eula.txt
 
-      - name: Verify EULA
+      - name: Verify EULA Before Start
         run: |
+          Write-Host "===== EULA ====="
           Get-Content D:\McFolder\eula.txt
 
-      - name: Start Server In Background
+      - name: Set 12GB RAM
         run: |
-          Start-Process -FilePath "D:\McFolder\run.bat"
-          Start-Sleep -Seconds 30
+          @"
+-Xms12G
+-Xmx12G
+"@ | Set-Content D:\McFolder\user_jvm_args.txt
 
-      - name: Show JVM Args
+      - name: Verify RAM File
         run: |
           Write-Host "===== user_jvm_args.txt ====="
           Get-Content D:\McFolder\user_jvm_args.txt
+
+      - name: Start Server In Background
+        run: |
+          Start-Process `
+            -FilePath "D:\McFolder\run.bat" `
+            -WorkingDirectory "D:\McFolder"
+
+          Start-Sleep -Seconds 30
+
+      - name: Show Java Processes
+        run: |
+          Get-CimInstance Win32_Process |
+          Where-Object {$_.Name -eq "java.exe"} |
+          Select-Object ProcessId, CommandLine
 
       - name: Show Folder Contents
         run: |
@@ -73,7 +90,3 @@ jobs:
           else {
             Write-Host "No latest.log found"
           }
-
-      - name: Show Java Processes
-        run: |
-          Get-Process java -ErrorAction SilentlyContinue
