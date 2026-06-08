@@ -1,4 +1,4 @@
-name: Forge Install Test
+name: Forge First Boot Test
 
 on:
   workflow_dispatch:
@@ -26,13 +26,23 @@ jobs:
             -Uri "https://maven.minecraftforge.net/net/minecraftforge/forge/1.21.11-61.1.8/forge-1.21.11-61.1.8-installer.jar" `
             -OutFile "D:\McFolder\forge-installer.jar"
 
-      - name: Verify Download
-        run: dir D:\McFolder
-
       - name: Install Forge Server
         run: |
           cd D:\McFolder
           java -jar forge-installer.jar --installServer
 
+      - name: First Boot
+        run: |
+          Start-Process -FilePath "D:\McFolder\run.bat"
+          Start-Sleep -Seconds 30
+
       - name: Show McFolder Contents
         run: dir D:\McFolder
+
+      - name: Show Logs Folder
+        run: |
+          if (Test-Path "D:\McFolder\logs") {
+            dir D:\McFolder\logs
+          } else {
+            Write-Host "No logs folder found"
+          }
