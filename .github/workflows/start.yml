@@ -162,3 +162,18 @@ jobs:
             $_.FullName -like "*playit*"
           } |
           Select-Object FullName
+
+      - name: Playit Claim Help
+        continue-on-error: true
+        run: |
+          & "C:\Program Files\playit_gg\bin\playit.exe" claim --help
+
+      - name: Playit Setup Help
+        continue-on-error: true
+        run: |
+          & "C:\Program Files\playit_gg\bin\playit.exe" setup --help
+
+      - name: Playit Account Help
+        continue-on-error: true
+        run: |
+          & "C:\Program Files\playit_gg\bin\playit.exe" account --help
