@@ -103,13 +103,7 @@ jobs:
 
       - name: Verify Playit Files
         run: |
-          Write-Host "===== Looking For Playit ====="
-
-          Get-ChildItem "C:\" -Recurse -ErrorAction SilentlyContinue |
-          Where-Object {
-            $_.Name -like "*playit*"
-          } |
-          Select-Object FullName
+          dir "C:\Program Files\playit_gg\bin"
 
       - name: Start Playit
         run: |
@@ -126,10 +120,6 @@ jobs:
           } |
           Select-Object ProcessId, Name, CommandLine
 
-      - name: Show Playit Folder
-        run: |
-          dir "C:\Program Files\playit_gg\bin"
-
       - name: Playit Version
         continue-on-error: true
         run: |
@@ -144,3 +134,15 @@ jobs:
         continue-on-error: true
         run: |
           & "C:\Program Files\playit_gg\bin\playit.exe" secret-path
+
+      - name: Show Playit Config
+        continue-on-error: true
+        run: |
+          Write-Host "===== playit.toml ====="
+
+          if (Test-Path "C:\ProgramData\playit_gg\playit.toml") {
+            Get-Content "C:\ProgramData\playit_gg\playit.toml"
+          }
+          else {
+            Write-Host "playit.toml not found"
+          }
