@@ -1,4 +1,4 @@
-name: Forge Download Test
+name: Forge Install Test
 
 on:
   workflow_dispatch:
@@ -27,4 +27,12 @@ jobs:
             -OutFile "D:\McFolder\forge-installer.jar"
 
       - name: Verify Download
+        run: dir D:\McFolder
+
+      - name: Install Forge Server
+        run: |
+          cd D:\McFolder
+          java -jar forge-installer.jar --installServer
+
+      - name: Show McFolder Contents
         run: dir D:\McFolder
