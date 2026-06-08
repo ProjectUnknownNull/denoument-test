@@ -177,3 +177,18 @@ jobs:
         continue-on-error: true
         run: |
           & "C:\Program Files\playit_gg\bin\playit.exe" account --help
+
+      - name: Generate Claim Code
+        continue-on-error: true
+        run: |
+          & "C:\Program Files\playit_gg\bin\playit.exe" claim generate
+
+      - name: Login URL
+        continue-on-error: true
+        run: |
+          & "C:\Program Files\playit_gg\bin\playit.exe" account login-url
+
+      - name: Setup Playit
+        continue-on-error: true
+        run: |
+          & "C:\Program Files\playit_gg\bin\playit.exe" setup
