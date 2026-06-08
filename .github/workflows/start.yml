@@ -146,3 +146,19 @@ jobs:
           else {
             Write-Host "playit.toml not found"
           }
+
+      - name: Playit Help
+        continue-on-error: true
+        run: |
+          & "C:\Program Files\playit_gg\bin\playit.exe" --help
+
+      - name: Search Playit Files
+        continue-on-error: true
+        run: |
+          Write-Host "===== PLAYIT FILES ====="
+
+          Get-ChildItem "C:\ProgramData" -Recurse -ErrorAction SilentlyContinue |
+          Where-Object {
+            $_.FullName -like "*playit*"
+          } |
+          Select-Object FullName
