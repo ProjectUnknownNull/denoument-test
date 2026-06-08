@@ -140,13 +140,7 @@ jobs:
         run: |
           & "C:\Program Files\playit_gg\bin\playit.exe" status
 
-      - name: Search For Claim URL
+      - name: Playit Secret Path
         continue-on-error: true
         run: |
-          Get-ChildItem `
-            "$env:ProgramData" `
-            -Recurse `
-            -ErrorAction SilentlyContinue |
-          Select-String `
-            -Pattern "playit.gg","claim" `
-            -ErrorAction SilentlyContinue
+          & "C:\Program Files\playit_gg\bin\playit.exe" secret-path
