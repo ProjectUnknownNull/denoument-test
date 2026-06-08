@@ -1,4 +1,4 @@
-name: Forge First Boot Test
+name: Forge Start Test
 
 on:
   workflow_dispatch:
@@ -14,9 +14,6 @@ jobs:
           distribution: 'oracle'
           java-version: '26'
 
-      - name: Verify Java
-        run: java -version
-
       - name: Create McFolder
         run: mkdir D:\McFolder
 
@@ -31,18 +28,19 @@ jobs:
           cd D:\McFolder
           java -jar forge-installer.jar --installServer
 
-      - name: First Boot
+      - name: Run Server
         run: |
-          Start-Process -FilePath "D:\McFolder\run.bat"
-          Start-Sleep -Seconds 30
+          cd D:\McFolder
+          .\run.bat
+        continue-on-error: true
 
       - name: Show McFolder Contents
         run: dir D:\McFolder
 
-      - name: Show Logs Folder
+      - name: Show EULA
         run: |
-          if (Test-Path "D:\McFolder\logs") {
-            dir D:\McFolder\logs
+          if (Test-Path "D:\McFolder\eula.txt") {
+            Get-Content "D:\McFolder\eula.txt"
           } else {
-            Write-Host "No logs folder found"
+            Write-Host "No eula.txt found"
           }
