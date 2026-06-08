@@ -88,3 +88,25 @@ jobs:
           else {
             Write-Host "No latest.log found"
           }
+
+      - name: Download Playit
+        run: |
+          Invoke-WebRequest `
+            -Uri "https://builds.playit.gg/1.0.8/playit-windows-x86_64-signed.msi" `
+            -OutFile "D:\playit.msi"
+
+      - name: Install Playit
+        run: |
+          Start-Process msiexec.exe `
+            -ArgumentList '/i D:\playit.msi /quiet /norestart' `
+            -Wait
+
+      - name: Verify Playit Files
+        run: |
+          Write-Host "===== Looking For Playit ====="
+
+          Get-ChildItem "C:\" -Recurse -ErrorAction SilentlyContinue |
+          Where-Object {
+            $_.Name -like "*playit*"
+          } |
+          Select-Object FullName
