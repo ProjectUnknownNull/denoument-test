@@ -52,10 +52,8 @@ jobs:
 
       - name: Set 12GB RAM
         run: |
-          @"
--Xms12G
--Xmx12G
-"@ | Set-Content D:\McFolder\user_jvm_args.txt
+          Set-Content D:\McFolder\user_jvm_args.txt "-Xms12G"
+          Add-Content D:\McFolder\user_jvm_args.txt "-Xmx12G"
 
       - name: Verify RAM File
         run: |
