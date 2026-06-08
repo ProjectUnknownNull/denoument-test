@@ -110,3 +110,18 @@ jobs:
             $_.Name -like "*playit*"
           } |
           Select-Object FullName
+
+      - name: Start Playit
+        run: |
+          Start-Process `
+            -FilePath "C:\Program Files\playit_gg\bin\playit.exe"
+
+          Start-Sleep -Seconds 20
+
+      - name: Show Playit Processes
+        run: |
+          Get-CimInstance Win32_Process |
+          Where-Object {
+            $_.Name -like "*playit*"
+          } |
+          Select-Object ProcessId, Name, CommandLine
