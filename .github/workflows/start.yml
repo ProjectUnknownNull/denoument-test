@@ -1,4 +1,4 @@
-name: Forge Start Test
+name: Forge Second Boot Test
 
 on:
   workflow_dispatch:
@@ -28,19 +28,34 @@ jobs:
           cd D:\McFolder
           java -jar forge-installer.jar --installServer
 
-      - name: Run Server
+      - name: First Boot
         run: |
           cd D:\McFolder
           .\run.bat
         continue-on-error: true
 
-      - name: Show McFolder Contents
-        run: dir D:\McFolder
+      - name: Accept EULA
+        run: |
+          (Get-Content D:\McFolder\eula.txt) `
+          -replace 'eula=false','eula=true' |
+          Set-Content D:\McFolder\eula.txt
 
       - name: Show EULA
+        run: Get-Content D:\McFolder\eula.txt
+
+      - name: Second Boot
         run: |
-          if (Test-Path "D:\McFolder\eula.txt") {
-            Get-Content "D:\McFolder\eula.txt"
+          cd D:\McFolder
+          .\run.bat
+        continue-on-error: true
+
+      - name: Show Latest Log
+        run: |
+          if (Test-Path "D:\McFolder\logs\latest.log") {
+            Get-Content "D:\McFolder\logs\latest.log" -Tail 100
           } else {
-            Write-Host "No eula.txt found"
+            Write-Host "No latest.log found"
           }
+
+      - name: Show Folder Contents
+        run: dir D:\McFolder
