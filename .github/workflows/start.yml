@@ -45,10 +45,23 @@ jobs:
           -replace 'eula=false','eula=true' |
           Set-Content D:\McFolder\eula.txt
 
+      - name: Set Online Mode False
+        run: |
+          (Get-Content D:\McFolder\server.properties) `
+          -replace 'online-mode=true','online-mode=false' |
+          Set-Content D:\McFolder\server.properties
+
       - name: Verify EULA Before Start
         run: |
           Write-Host "===== EULA ====="
           Get-Content D:\McFolder\eula.txt
+
+      - name: Verify Server Properties
+        run: |
+          Write-Host "===== ONLINE MODE ====="
+          Select-String `
+            -Path D:\McFolder\server.properties `
+            -Pattern "online-mode"
 
       - name: Set 12GB RAM
         run: |
