@@ -192,3 +192,8 @@ jobs:
         continue-on-error: true
         run: |
           & "C:\Program Files\playit_gg\bin\playit.exe" setup
+
+      - name: Keep Server Alive
+        run: |
+          Write-Host "Server is running..."
+          Start-Sleep -Seconds 21600
