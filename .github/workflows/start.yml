@@ -33,6 +33,28 @@ jobs:
           cd D:\McFolder
           java -jar forge-installer.jar --installServer
 
+      - name: Download Previous World
+        uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: minecraft-world
+          path: D:\restore
+
+      - name: Restore World
+        continue-on-error: true
+        run: |
+          if (Test-Path "D:\restore\world.zip") {
+            Expand-Archive `
+              -Path "D:\restore\world.zip" `
+              -DestinationPath "D:\McFolder" `
+              -Force
+
+            Write-Host "WORLD RESTORED"
+          }
+          else {
+            Write-Host "NO BACKUP FOUND"
+          }
+
       - name: First Boot
         continue-on-error: true
         run: |
