@@ -45,16 +45,20 @@ jobs:
           -replace 'eula=false','eula=true' |
           Set-Content D:\McFolder\eula.txt
 
+      - name: Generate Server Properties
+        continue-on-error: true
+        run: |
+          Start-Process `
+            -FilePath "D:\McFolder\run.bat" `
+            -WorkingDirectory "D:\McFolder"
+
+          Start-Sleep -Seconds 30
+
       - name: Set Online Mode False
         run: |
           (Get-Content D:\McFolder\server.properties) `
           -replace 'online-mode=true','online-mode=false' |
           Set-Content D:\McFolder\server.properties
-
-      - name: Verify EULA Before Start
-        run: |
-          Write-Host "===== EULA ====="
-          Get-Content D:\McFolder\eula.txt
 
       - name: Verify Server Properties
         run: |
@@ -63,15 +67,16 @@ jobs:
             -Path D:\McFolder\server.properties `
             -Pattern "online-mode"
 
+      - name: Stop Minecraft
+        continue-on-error: true
+        run: |
+          Get-Process java -ErrorAction SilentlyContinue |
+          Stop-Process -Force
+
       - name: Set 12GB RAM
         run: |
           Set-Content D:\McFolder\user_jvm_args.txt "-Xms12G"
           Add-Content D:\McFolder\user_jvm_args.txt "-Xmx12G"
-
-      - name: Verify RAM File
-        run: |
-          Write-Host "===== user_jvm_args.txt ====="
-          Get-Content D:\McFolder\user_jvm_args.txt
 
       - name: Start Server In Background
         run: |
