@@ -214,4 +214,23 @@ jobs:
       - name: Keep Server Alive
         run: |
           Write-Host "Server is running..."
-          Start-Sleep -Seconds 21600
+          Start-Sleep -Seconds 90
+
+      - name: Stop Minecraft
+        continue-on-error: true
+        run: |
+          Get-Process java -ErrorAction SilentlyContinue |
+          Stop-Process -Force
+
+      - name: Compress World
+        run: |
+          Compress-Archive `
+            -Path "D:\McFolder\world" `
+            -DestinationPath "D:\world.zip" `
+            -Force
+
+      - name: Upload World Backup
+        uses: actions/upload-artifact@v4
+        with:
+          name: minecraft-world
+          path: D:\world.zip
