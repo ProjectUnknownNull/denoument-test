@@ -314,10 +314,31 @@ jobs:
 
           git push
 
+      - name: Stop Playit
+        continue-on-error: true
+        run: |
+          Get-Process playit* -ErrorAction SilentlyContinue |
+          Stop-Process -Force
+
+          Start-Sleep -Seconds 5
+
       - name: Save Playit Data
         run: |
+          New-Item `
+            -ItemType Directory `
+            -Path "D:\playit_backup" `
+            -Force
+
+          Copy-Item `
+            "C:\ProgramData\playit_gg\playit.toml" `
+            "D:\playit_backup\"
+
+          Copy-Item `
+            "C:\ProgramData\playit_gg\installed_user.sid" `
+            "D:\playit_backup\"
+
           Compress-Archive `
-            -Path "C:\ProgramData\playit_gg" `
+            -Path "D:\playit_backup\*" `
             -DestinationPath ".\saves\playit.zip" `
             -Force
 
