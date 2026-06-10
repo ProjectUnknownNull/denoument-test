@@ -259,6 +259,21 @@ jobs:
             -Recurse |
           Select-Object FullName
 
+      - name: Show Playit Config
+        continue-on-error: true
+        run: |
+          Write-Host "===== playit.toml ====="
+
+          Get-Content `
+            "C:\ProgramData\playit_gg\playit.toml"
+
+          Write-Host ""
+
+          Write-Host "===== installed_user.sid ====="
+
+          Get-Content `
+            "C:\ProgramData\playit_gg\installed_user.sid"
+
       - name: Keep Server Alive
         run: |
           Start-Sleep -Seconds 120
