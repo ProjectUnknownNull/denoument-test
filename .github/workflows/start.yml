@@ -59,15 +59,6 @@ jobs:
             Write-Host "===== NO PLAYIT SAVE FOUND ====="
           }
 
-      - name: Verify Playit Restore
-        run: |
-          Write-Host "===== PLAYIT FILES ====="
-
-          Get-ChildItem `
-            "C:\ProgramData\playit_gg" `
-            -Recurse |
-          Select-Object FullName
-
       - name: Restore World Save
         run: |
           if (Test-Path ".\saves\world.zip") {
@@ -82,16 +73,6 @@ jobs:
           }
           else {
             Write-Host "===== NO WORLD SAVE FOUND ====="
-          }
-
-      - name: Verify Restored World
-        run: |
-          if (Test-Path "D:\McFolder\world") {
-            Write-Host "===== RESTORED WORLD ====="
-            dir D:\McFolder\world
-          }
-          else {
-            Write-Host "No world folder found"
           }
 
       - name: Download Forge Installer
@@ -132,13 +113,6 @@ jobs:
           -replace 'online-mode=true','online-mode=false' |
           Set-Content D:\McFolder\server.properties
 
-      - name: Verify Server Properties
-        run: |
-          Write-Host "===== ONLINE MODE ====="
-          Select-String `
-            -Path D:\McFolder\server.properties `
-            -Pattern "online-mode"
-
       - name: Stop Minecraft
         continue-on-error: true
         run: |
@@ -158,27 +132,6 @@ jobs:
 
           Start-Sleep -Seconds 30
 
-      - name: Show Java Processes
-        run: |
-          Get-CimInstance Win32_Process |
-          Where-Object {$_.Name -eq "java.exe"} |
-          Select-Object ProcessId, CommandLine
-
-      - name: Show Folder Contents
-        run: |
-          Write-Host "===== McFolder ====="
-          dir D:\McFolder
-
-      - name: Show Latest Log
-        run: |
-          if (Test-Path "D:\McFolder\logs\latest.log") {
-            Write-Host "===== latest.log ====="
-            Get-Content "D:\McFolder\logs\latest.log" -Tail 100
-          }
-          else {
-            Write-Host "No latest.log found"
-          }
-
       - name: Download Playit
         run: |
           Invoke-WebRequest `
@@ -190,10 +143,6 @@ jobs:
           Start-Process msiexec.exe `
             -ArgumentList '/i D:\playit.msi /quiet /norestart' `
             -Wait
-
-      - name: Verify Playit Files
-        run: |
-          dir "C:\Program Files\playit_gg\bin"
 
       - name: Check Playit Status
         continue-on-error: true
@@ -207,71 +156,15 @@ jobs:
 
           Start-Sleep -Seconds 20
 
-      - name: Show Playit Processes
-        run: |
-          Get-CimInstance Win32_Process |
-          Where-Object {
-            $_.Name -like "*playit*"
-          } |
-          Select-Object ProcessId, Name, CommandLine
-
-      - name: Playit Version
-        continue-on-error: true
-        run: |
-          & "C:\Program Files\playit_gg\bin\playit.exe" version
-
       - name: Playit Status
         continue-on-error: true
         run: |
           & "C:\Program Files\playit_gg\bin\playit.exe" status
 
-      - name: Playit Secret Path
-        continue-on-error: true
-        run: |
-          & "C:\Program Files\playit_gg\bin\playit.exe" secret-path
-
-      - name: Show Playit Config
-        continue-on-error: true
-        run: |
-          Write-Host "===== playit.toml ====="
-
-          if (Test-Path "C:\ProgramData\playit_gg\playit.toml") {
-            Get-Content "C:\ProgramData\playit_gg\playit.toml"
-          }
-          else {
-            Write-Host "playit.toml not found"
-          }
-
-      - name: Playit Help
-        continue-on-error: true
-        run: |
-          & "C:\Program Files\playit_gg\bin\playit.exe" --help
-
-      - name: Search Playit Files
-        continue-on-error: true
-        run: |
-          Write-Host "===== PLAYIT FILES ====="
-
-          Get-ChildItem "C:\ProgramData" -Recurse -ErrorAction SilentlyContinue |
-          Where-Object {
-            $_.FullName -like "*playit*"
-          } |
-          Select-Object FullName
-
       - name: Playit Claim Help
         continue-on-error: true
         run: |
           & "C:\Program Files\playit_gg\bin\playit.exe" claim --help
-
-      - name: Playit Setup Help
-        continue-on-error: true
-        run: |
-          & "C:\Program Files\playit_gg\bin\playit.exe" setup --help
-
-      - name: Playit Account Help
-        continue-on-error: true
-        run: |
-          & "C:\Program Files\playit_gg\bin\playit.exe" account --help
 
       - name: Generate Claim Code
         continue-on-error: true
@@ -287,30 +180,6 @@ jobs:
         continue-on-error: true
         run: |
           & "C:\Program Files\playit_gg\bin\playit.exe" setup
-
-      - name: Show Playit Data
-        run: |
-          Write-Host "===== PLAYIT DATA ====="
-
-          Get-ChildItem `
-            "C:\ProgramData\playit_gg" `
-            -Recurse |
-          Select-Object FullName
-
-      - name: Show Playit Config
-        continue-on-error: true
-        run: |
-          Write-Host "===== playit.toml ====="
-
-          Get-Content `
-            "C:\ProgramData\playit_gg\playit.toml"
-
-          Write-Host ""
-
-          Write-Host "===== installed_user.sid ====="
-
-          Get-Content `
-            "C:\ProgramData\playit_gg\installed_user.sid"
 
       - name: Keep Server Alive
         run: |
