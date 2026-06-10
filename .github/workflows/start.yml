@@ -18,6 +18,9 @@ jobs:
           distribution: 'oracle'
           java-version: '26'
 
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
       - name: Check Java
         run: java -version
 
