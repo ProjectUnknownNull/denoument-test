@@ -250,6 +250,15 @@ jobs:
         run: |
           & "C:\Program Files\playit_gg\bin\playit.exe" setup
 
+      - name: Show Playit Data
+        run: |
+          Write-Host "===== PLAYIT DATA ====="
+
+          Get-ChildItem `
+            "C:\ProgramData\playit_gg" `
+            -Recurse |
+          Select-Object FullName
+
       - name: Keep Server Alive
         run: |
           Start-Sleep -Seconds 120
