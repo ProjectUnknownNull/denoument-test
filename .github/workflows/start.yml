@@ -35,6 +35,32 @@ jobs:
         run: |
           mkdir D:\McFolder
 
+      - name: Restore World Save
+        run: |
+          if (Test-Path ".\saves\world.zip") {
+            Write-Host "===== WORLD SAVE FOUND ====="
+
+            Expand-Archive `
+              -Path ".\saves\world.zip" `
+              -DestinationPath "D:\McFolder" `
+              -Force
+
+            Write-Host "World restored!"
+          }
+          else {
+            Write-Host "===== NO WORLD SAVE FOUND ====="
+          }
+
+      - name: Verify Restored World
+        run: |
+          if (Test-Path "D:\McFolder\world") {
+            Write-Host "===== RESTORED WORLD ====="
+            dir D:\McFolder\world
+          }
+          else {
+            Write-Host "No world folder found"
+          }
+
       - name: Download Forge Installer
         run: |
           Invoke-WebRequest `
