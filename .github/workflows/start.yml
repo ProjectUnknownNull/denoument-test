@@ -35,17 +35,38 @@ jobs:
         run: |
           mkdir D:\McFolder
 
+          
+
       - name: Restore Playit Data
         run: |
           if (Test-Path ".\saves\playit.zip") {
 
-            Expand-Archive `
-              -Path ".\saves\playit.zip" `
-              -DestinationPath "C:\ProgramData" `
+            Write-Host "===== PLAYIT SAVE FOUND ====="
+
+            New-Item `
+              -ItemType Directory `
+              -Path "C:\ProgramData\playit_gg" `
               -Force
 
-            Write-Host "Playit restored"
+            Expand-Archive `
+              -Path ".\saves\playit.zip" `
+              -DestinationPath "C:\ProgramData\playit_gg" `
+              -Force
+
+            Write-Host "Playit restored!"
           }
+          else {
+            Write-Host "===== NO PLAYIT SAVE FOUND ====="
+          }
+
+      - name: Verify Playit Restore
+        run: |
+          Write-Host "===== PLAYIT FILES ====="
+
+          Get-ChildItem `
+            "C:\ProgramData\playit_gg" `
+            -Recurse |
+          Select-Object FullName
 
       - name: Restore World Save
         run: |
@@ -173,6 +194,11 @@ jobs:
       - name: Verify Playit Files
         run: |
           dir "C:\Program Files\playit_gg\bin"
+
+      - name: Check Playit Status
+        continue-on-error: true
+        run: |
+          & "C:\Program Files\playit_gg\bin\playit.exe" status
 
       - name: Start Playit
         run: |
