@@ -28,9 +28,6 @@ jobs:
             -Path ".\saves" `
             -Force
 
-      - name: Check Java
-        run: java -version
-
       - name: Create McFolder
         run: |
           mkdir D:\McFolder
@@ -148,11 +145,6 @@ jobs:
             -FilePath "C:\Program Files\playit_gg\bin\playit.exe"
 
           Start-Sleep -Seconds 20
-
-      - name: Playit Status
-        continue-on-error: true
-        run: |
-          & "C:\Program Files\playit_gg\bin\playit.exe" status
 
       - name: Generate Claim Code
         continue-on-error: true
