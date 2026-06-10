@@ -35,6 +35,18 @@ jobs:
         run: |
           mkdir D:\McFolder
 
+      - name: Restore Playit Data
+        run: |
+          if (Test-Path ".\saves\playit.zip") {
+
+            Expand-Archive `
+              -Path ".\saves\playit.zip" `
+              -DestinationPath "C:\ProgramData" `
+              -Force
+
+            Write-Host "Playit restored"
+          }
+
       - name: Restore World Save
         run: |
           if (Test-Path ".\saves\world.zip") {
@@ -299,5 +311,23 @@ jobs:
           git add saves/world.zip
 
           git commit -m "Automatic world save" || echo "Nothing to commit"
+
+          git push
+
+      - name: Save Playit Data
+        run: |
+          Compress-Archive `
+            -Path "C:\ProgramData\playit_gg" `
+            -DestinationPath ".\saves\playit.zip" `
+            -Force
+
+      - name: Commit Playit Save
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+          git add saves/playit.zip
+
+          git commit -m "Update Playit Save" || echo "Nothing to commit"
 
           git push
