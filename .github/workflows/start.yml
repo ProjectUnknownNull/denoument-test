@@ -34,9 +34,7 @@ jobs:
       - name: Create McFolder
         run: |
           mkdir D:\McFolder
-
           
-
       - name: Restore Playit Data
         run: |
           if (Test-Path ".\saves\playit.zip") {
@@ -144,11 +142,6 @@ jobs:
             -ArgumentList '/i D:\playit.msi /quiet /norestart' `
             -Wait
 
-      - name: Check Playit Status
-        continue-on-error: true
-        run: |
-          & "C:\Program Files\playit_gg\bin\playit.exe" status
-
       - name: Start Playit
         run: |
           Start-Process `
@@ -160,11 +153,6 @@ jobs:
         continue-on-error: true
         run: |
           & "C:\Program Files\playit_gg\bin\playit.exe" status
-
-      - name: Playit Claim Help
-        continue-on-error: true
-        run: |
-          & "C:\Program Files\playit_gg\bin\playit.exe" claim --help
 
       - name: Generate Claim Code
         continue-on-error: true
