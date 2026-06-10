@@ -21,6 +21,13 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Create Save Folder
+        run: |
+          New-Item `
+            -ItemType Directory `
+            -Path ".\saves" `
+            -Force
+
       - name: Check Java
         run: java -version
 
@@ -219,5 +226,28 @@ jobs:
 
       - name: Keep Server Alive
         run: |
-          Write-Host "Server is running..."
-          Start-Sleep -Seconds 21600
+          Start-Sleep -Seconds 120
+
+      - name: Stop Minecraft
+        continue-on-error: true
+        run: |
+          Get-Process java -ErrorAction SilentlyContinue |
+          Stop-Process -Force
+
+      - name: Compress World
+        run: |
+          Compress-Archive `
+            -Path "D:\McFolder\world" `
+            -DestinationPath ".\saves\world.zip" `
+            -Force
+
+      - name: Commit World Save
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+          git add saves/world.zip
+
+          git commit -m "Automatic world save" || echo "Nothing to commit"
+
+          git push
