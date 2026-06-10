@@ -168,26 +168,10 @@ jobs:
       - name: Stop Minecraft
         continue-on-error: true
         run: |
+          Start-Sleep -Seconds 15
+
           Get-Process java -ErrorAction SilentlyContinue |
-          Stop-Process -Force
-
-      - name: Compress World
-        run: |
-          Compress-Archive `
-            -Path "D:\McFolder\world" `
-            -DestinationPath ".\saves\world.zip" `
-            -Force
-
-      - name: Commit World Save
-        run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-
-          git add saves/world.zip
-
-          git commit -m "Automatic world save" || echo "Nothing to commit"
-
-          git push
+          Stop-Process
 
       - name: Stop Playit
         continue-on-error: true
@@ -196,6 +180,13 @@ jobs:
           Stop-Process -Force
 
           Start-Sleep -Seconds 5
+
+      - name: Compress World
+        run: |
+          Compress-Archive `
+            -Path "D:\McFolder\world" `
+            -DestinationPath ".\saves\world.zip" `
+            -Force
 
       - name: Save Playit Data
         run: |
@@ -217,13 +208,14 @@ jobs:
             -DestinationPath ".\saves\playit.zip" `
             -Force
 
-      - name: Commit Playit Save
+      - name: Commit Saves
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
 
+          git add saves/world.zip
           git add saves/playit.zip
 
-          git commit -m "Update Playit Save" || echo "Nothing to commit"
+          git commit -m "Update server data" || echo "Nothing to commit"
 
           git push
