@@ -163,13 +163,11 @@ jobs:
 
       - name: Keep Server Alive
         run: |
-          Start-Sleep -Seconds 120
+          Start-Sleep -Seconds 90
 
       - name: Stop Minecraft
         continue-on-error: true
         run: |
-          Start-Sleep -Seconds 15
-
           Get-Process java -ErrorAction SilentlyContinue |
           Stop-Process
 
