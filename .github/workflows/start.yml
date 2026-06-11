@@ -171,6 +171,15 @@ jobs:
           Get-Process java -ErrorAction SilentlyContinue |
           Stop-Process
 
+      - name: Show Latest Log Before Shutdown
+        continue-on-error: true
+        run: |
+          if (Test-Path "D:\McFolder\logs\latest.log") {
+            Get-Content `
+              "D:\McFolder\logs\latest.log" `
+              -Tail 100
+          }
+
       - name: Stop Playit
         continue-on-error: true
         run: |
